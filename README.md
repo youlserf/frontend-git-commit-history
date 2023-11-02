@@ -6,7 +6,7 @@ This is the readme for the "frontend" project. This project is a frontend applic
 
 Before you can run this project, make sure you have the following software installed on your machine:
 
-- [Node.js](https://nodejs.org/) (at least version 16)
+- [Node.js](https://nodejs.org/) (at least version 18)
 - [npm](https://www.npmjs.com/) (usually comes with Node.js installation)
 
 ## Installation
