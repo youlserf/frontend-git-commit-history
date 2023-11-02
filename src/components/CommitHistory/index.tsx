@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import instance from "../../axiosConfig";
 import { Commit } from "../../model/github.interface";
 import { ColumnWrapper, CustomButton, CustomInput } from "../CustomElements";
@@ -6,73 +6,58 @@ import ItemCommitHistory from "./ItemCommitHistory";
 import "./styles.css";
 
 
-
-
-const defaultOwner = "youlserf"; // Replace with the default owner
-const defaultRepo = "challenge-backend"; // Replace with the default repository
-
 const CommitHistoryComponent: React.FC = ({ handleLogout }) => {
   const [commits, setCommits] = useState<Commit[]>([]);
   const [owner, setOwner] = useState<string>(""); // State to capture username
   const [repo, setRepo] = useState<string>(""); // State to capture repository name
   const [repositoryUrl, setRepositoryUrl] = useState<string>(""); // State to capture repository URL
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const fetchCommitHistory = () => {
+  const fetchCommitHistory = async () => {
+    setLoading(true);
+    setError(null);
+
     const bearerToken = localStorage.getItem("token");
-
     const config = {
       headers: {
         Authorization: `Bearer ${bearerToken}`,
       },
     };
 
-    if (repositoryUrl) {
-      const urlParts = repositoryUrl.split("/");
-      const urlOwner = urlParts[urlParts.length - 2];
-      const urlRepo = urlParts[urlParts.length - 1];
+    try {
+      let urlOwner = owner;
+      let urlRepo = repo;
 
-      instance
-        .get(`/github/commit-history/${urlOwner}/${urlRepo}`, config)
-        .then((response) => {
-          setOwner(urlOwner);
-          setRepo(urlRepo);
-          setCommits(response.data);
-        })
-        .catch((error) => {
-          setCommits([]);
-          if (error.response && error.response.status === 404) {
-            // Show an alert or message to inform the user that the resource was not found
-            alert("Resource not found. Please check the owner and repo in the URL.");
-          } else {
-            console.error("Error fetching commit history:", error);
-          }
-        });
-    } else {
-      // User entered username and repo name
-      instance
-        .get(`/github/commit-history/${owner}/${repo}`, config)
-        .then((response) => {
-          setCommits(response.data);
-        })
-        .catch((error) => {
-          setCommits([]);
-          if (error.response && error.response.status === 404) {
-            // Show an alert or message to inform the user that the resource was not found
-            alert("Resource not found. Please check the owner and repo.");
-          } else {
-            console.error("Error fetching commit history:", error);
-          }
-        });
+      if (repositoryUrl) {
+        const urlParts = repositoryUrl.split("/");
+        urlOwner = urlParts[urlParts.length - 2];
+        urlRepo = urlParts[urlParts.length - 1];
+      }
+
+      const response = await instance.get(
+        `/github/commit-history/${urlOwner}/${urlRepo}`,
+        config
+      );
+
+      setOwner(urlOwner);
+      setRepo(urlRepo);
+      setCommits(response.data);
+    } catch (error) {
+      setCommits([]);
+      if (error.response && error.response.status === 404) {
+        setError("Resource not found. Please check the owner and repo.");
+      } else {
+        setError("Error fetching commit history.");
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
-  useEffect(() => {
-    // Initially fetch commit history with default values
-    fetchCommitHistory();
-  }, []); // Update commit history when owner or repo changes
-
   return (
     <>
+      {error && <p>Error: {error}</p>}
       {commits[0] && (
         <img
           src={commits[0]?.author?.avatar_url ?? "fallback-image-url"}
@@ -89,7 +74,7 @@ const CommitHistoryComponent: React.FC = ({ handleLogout }) => {
           onClick={() => handleLogout()}
           style={{ position: "absolute", top: 2, right: 2 }}
         >
-          logout
+          Logout
         </CustomButton>
         <ColumnWrapper>
           <CustomInput
@@ -98,7 +83,9 @@ const CommitHistoryComponent: React.FC = ({ handleLogout }) => {
             value={repositoryUrl}
             onChange={(e) => setRepositoryUrl(e.target.value)}
           />
-          <CustomButton onClick={() => fetchCommitHistory()}>Fetch Commits</CustomButton>
+          <CustomButton onClick={() => fetchCommitHistory()}>
+            Fetch Commits
+          </CustomButton>
         </ColumnWrapper>
         <div className="card">
           <div className="title">
@@ -107,9 +94,15 @@ const CommitHistoryComponent: React.FC = ({ handleLogout }) => {
             </p>
           </div>
           <div className="wrapper">
-            {commits.map((commit) => (
-              <ItemCommitHistory key={commit.sha} item={commit} />
-            ))}
+              {loading ? (
+                <div className="flex items-center justify-center h-32">
+                  <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500"></div>
+                </div>
+              ) : (
+                commits.map((commit) => (
+                  <ItemCommitHistory key={commit.sha} item={commit} />
+                ))
+              )}
           </div>
         </div>
       </div>

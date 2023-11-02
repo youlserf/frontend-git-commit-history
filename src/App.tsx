@@ -18,35 +18,6 @@ const AppContainer = styled.div`
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const token = localStorage.getItem('token');
-
-  useEffect(() => {
-    if (token) {
-      validateToken();
-    } else {
-      setIsLoggedIn(false);
-    }
-  }, [token]);
-
-  const validateToken = async () => {
-    try {
-      const response = await fetch('http://localhost:3031/auth/validate-token', {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-      });
-
-      if (response.status === 200) {
-        setIsLoggedIn(true);
-      } else {
-        setIsLoggedIn(false);
-        localStorage.removeItem('token');
-      }
-    } catch (error) {
-      console.error('Error while validating token:', error);
-    }
-  };
 
   const handleLogout = () => {
     localStorage.removeItem('token');
