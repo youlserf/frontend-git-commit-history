@@ -1,18 +1,21 @@
 import styled from 'styled-components';
 
 export const CustomInput = styled.input`
-  padding: 10px;
+  padding: 15px; /* Increase the padding for a taller input field */
   border: 2px solid #ccc;
   border-radius: 5px;
   font-size: 16px;
   color: #555;
   outline: none;
+  width: 100%;
 
   &:focus {
     border-color: #007bff;
     box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
   }
 `;
+
+
 
 
 export const CustomButton = styled.button`
@@ -61,4 +64,16 @@ export const ErrorMessage = styled.div`
   color: red;
   margin-top: 10px;
   text-align: center;
+`;
+
+export const ColumnWrapper = styled.div`
+  display: flex;
+  gap: 5px;
+  flex-direction: row;
+  align-items: center;
+
+  @media (max-width: 1000px) {
+    flex-direction: column;
+    align-items: center;
+  }
 `;
