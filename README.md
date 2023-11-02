@@ -44,26 +44,6 @@ npm run build
 
 This command will transpile your TypeScript code using the TypeScript compiler (`tsc`) and then use Vite to bundle the application. The production-ready files will be placed in the "dist" directory.
 
-## Linting
-
-You can use ESLint to check your code for linting errors. To run the linter, use the following command:
-
-```bash
-npm run lint
-```
-
-This will check your TypeScript and TypeScript React code for any linting issues. It's recommended to resolve all linting errors before building or deploying the project.
-
-## Preview
-
-If you want to preview the built application before deploying it, you can use the following command:
-
-```bash
-npm run preview
-```
-
-This will start a local server to serve the production build of your application. You can access it in your web browser at the provided URL.
-
 ## Dependencies
 
 Here are the main dependencies used in this project:
