@@ -42,3 +42,23 @@ export const CustomButton = styled.button`
     transition: 100ms;
   }
 `;
+
+
+export const LoginContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+`;
+
+export const LoginTitle = styled.h2`
+  text-align: center;
+  margin-bottom: 20px;
+`;
+
+export const ErrorMessage = styled.div`
+  color: red;
+  margin-top: 10px;
+  text-align: center;
+`;

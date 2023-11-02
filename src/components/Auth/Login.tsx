@@ -1,23 +1,8 @@
-import { useState } from 'react';
-import instance from '../../axiosConfig';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { CustomButton, CustomInput } from '../CustomElements';
-
-
-const LoginTitle = styled.h2`
-  text-align: center;
-  margin-bottom: 20px;
-`;
-
-
-const ErrorMessage = styled.div`
-  color: red;
-  margin-top: 10px;
-  text-align: center;
-`;
-
-
+import instance from '../../axiosConfig';
+import { CustomButton, CustomInput, ErrorMessage, LoginContainer, LoginTitle } from '../CustomElements';
 
 const Login = ({ setIsLoggedIn }) => {
   const [username, setUsername] = useState('');
@@ -34,8 +19,6 @@ const Login = ({ setIsLoggedIn }) => {
 
       if (response.status === 201) {
         const token = response.data.access_token;
-        // Store the token in localStorage or state
-        // Redirect to the next view or route
         localStorage.setItem('token', token);
         setIsLoggedIn(true);
         navigate('/commit-history');
@@ -46,13 +29,7 @@ const Login = ({ setIsLoggedIn }) => {
   };
 
   return (
-    <div style={{
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "center",
-      justifyContent: "center",
-      gap: "5px"
-    }}>
+    <LoginContainer>
       <LoginTitle>Login</LoginTitle>
       <CustomInput
         type="text"
@@ -68,7 +45,7 @@ const Login = ({ setIsLoggedIn }) => {
       />
       <CustomButton onClick={handleLogin}>Login</CustomButton>
       {error && <ErrorMessage>{error}</ErrorMessage>}
-    </div>
+    </LoginContainer>
   );
 };
 
