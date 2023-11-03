@@ -1,9 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import instance from "../../axiosConfig";
-import {
-  ErrorMessage,
-} from "../CustomElements";
+import { ErrorMessage } from "../CustomElements";
 
 const Login = ({ setIsLoggedIn }) => {
   const [username, setUsername] = useState("");
@@ -36,15 +34,19 @@ const Login = ({ setIsLoggedIn }) => {
         const token = response.data.access_token;
         localStorage.setItem("token", token);
         return token;
+      } else if (response.status === 401) {
+        setError("Unauthorized - Invalid username or password");
+      } else {
+        setError("An error occurred while logging in.");
       }
+
       return null;
     } catch (error) {
       return null;
     }
   };
 
-
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem("token");
 
   useEffect(() => {
     if (token) {
@@ -56,25 +58,25 @@ const Login = ({ setIsLoggedIn }) => {
 
   const validateToken = async () => {
     try {
-      const response = await fetch('http://localhost:3031/auth/validate-token', {
-        method: 'GET',
+      const response = await instance.get("/auth/validate-token", {
         headers: {
-          'Authorization': `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
         },
       });
+  
 
+      
       if (response.status === 200) {
         navigate("/commit-history");
         setIsLoggedIn(true);
       } else {
         setIsLoggedIn(false);
-        localStorage.removeItem('token');
+        localStorage.removeItem("token");
       }
     } catch (error) {
-      console.error('Error while validating token:', error);
+      console.error("Error while validating token:", error);
     }
   };
-  
 
   return (
     <section>
