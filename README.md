@@ -34,15 +34,12 @@ npm run dev
 
 This will start the development server provided by Vite and allow you to make changes to the code. The server will automatically reload your application as you save changes.
 
-## Build
+## User Credentials
 
-To build the project for production, use the following command:
+To access the application, you'll need to enter the following credentials in the login interface:
 
-```bash
-npm run build
-```
-
-This command will transpile your TypeScript code using the TypeScript compiler (`tsc`) and then use Vite to bundle the application. The production-ready files will be placed in the "dist" directory.
+- **Username:** user
+- **Password:** password
 
 ## Dependencies
 
